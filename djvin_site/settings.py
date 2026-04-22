@@ -134,6 +134,12 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
+# Heroku/Railway deployment check
+import sys
+if not os.path.exists(os.path.join(BASE_DIR, 'db.sqlite3')):
+    # SQLite doesn't exist (PostgreSQL should be used)
+    pass
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
