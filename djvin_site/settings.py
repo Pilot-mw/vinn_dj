@@ -183,11 +183,3 @@ CSRF_TRUSTED_ORIGINS = [
     "https://vinn-dj.onrender.com",
     "https://www.vinn-dj.onrender.com",
 ]
-
-
-# Auto-create superuser in production
-if not DEBUG and 'RENDER' in os.environ:
-    from django.contrib.auth import get_user_model
-    User = get_user_model()
-    if not User.objects.filter(username='admin').exists():
-        User.objects.create_superuser('admin', 'djvinmw@gmail.com', 'admin123')
