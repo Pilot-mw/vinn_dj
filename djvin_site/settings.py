@@ -22,10 +22,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['djvinmw.up.railway.app', 'www.djvinmw.up.railway.app', '127.0.0.1', 'localhost']
-ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
-if ALLOWED_HOSTS_ENV:
-    ALLOWED_HOSTS += [h.strip() for h in ALLOWED_HOSTS_ENV.split(',') if h.strip()]
+ALLOWED_HOSTS = ['*']
 
 # Media files
 MEDIA_URL = '/media/'
@@ -88,9 +85,10 @@ WSGI_APPLICATION = 'djvin_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
