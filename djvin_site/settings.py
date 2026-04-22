@@ -20,9 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiws+2x419p&yfzk*95z3o(l&!*toio_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+if ALLOWED_HOSTS == ['']:
+    ALLOWED_HOSTS = ['*']
 
 # Media files
 MEDIA_URL = '/media/'
@@ -84,18 +86,11 @@ WSGI_APPLICATION = 'djvin_site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3')
+    )
+}
 
 
 # Password validation
