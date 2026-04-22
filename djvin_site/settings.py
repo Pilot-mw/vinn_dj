@@ -21,10 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiws+2x419p&yfzk*95z3o(l&!*toio_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', 'False') == 'True'
+DEBUG = config('DEBUG', default='False') == 'True'
 
 _allowed_hosts = config('ALLOWED_HOSTS', default='*')
 ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',')]
+
+# Add the Render domain explicitly
+if 'vinn-dj.onrender.com' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('vinn-dj.onrender.com')
+    ALLOWED_HOSTS.append('www.vinn-dj.onrender.com')
 
 # Media files
 MEDIA_URL = '/media/'
