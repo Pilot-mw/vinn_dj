@@ -23,7 +23,8 @@ SECRET_KEY = config('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiws+2x419p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', '*').split(',')
+_allowed_hosts = config('ALLOWED_HOSTS', default='*')
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',')]
 
 # Media files
 MEDIA_URL = '/media/'
