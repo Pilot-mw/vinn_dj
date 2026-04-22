@@ -1,0 +1,59 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+:root {
+    --bg: #000;
+    --card: #003366;
+    --border: #004080;
+    --text: #ff9500;
+}
+
+body {
+    background: var(--bg) !important;
+}
+
+.login #content {
+    background: var(--card) !important;
+    border: 2px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+
+.form-row {
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 15px !important;
+}
+
+.form-row label {
+    color: var(--text) !important;
+    font-weight: 600;
+}
+
+input[type="text"], input[type="password"] {
+    background: #001a33 !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+}
+
+.submit-row input {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+    width: 100%;
+}
+
+ul.errorlist li {
+    color: #ff9500 !important;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-bottom: 30px;">
+    <h1 style="color: #ff9500; font-size: 24px; letter-spacing: 2px;">DJ VIN Admin</h1>
+</div>
+{{ block.super }}
+{% endblock %}

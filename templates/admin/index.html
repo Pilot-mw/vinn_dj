@@ -1,0 +1,73 @@
+{% extends "admin/index.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+:root {
+    --bg: #000;
+    --card: #003366;
+    --card-alt: #003366;
+    --border: #004080;
+    --text: #ff9500;
+    --text-muted: #ffcc80;
+}
+
+body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+.dashboard {
+    background: transparent !important;
+    padding: 20px !important;
+}
+
+.module {
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 30px !important;
+}
+
+.module h2 {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    border-bottom: 2px solid var(--border) !important;
+    font-size: 14px !important;
+    padding: 10px 15px !important;
+}
+
+.module table {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    width: 100%;
+}
+
+.module th {
+    background: var(--card-alt) !important;
+    color: var(--text) !important;
+    padding: 12px 15px !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+.module td {
+    background: var(--card) !important;
+    color: var(--text) !important;
+    padding: 12px 15px !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.module td a {
+    color: var(--text) !important;
+}
+
+.module td a:hover {
+    color: #ffcc80 !important;
+}
+
+.module tr:hover td {
+    background: #002244 !important;
+}
+</style>
+{% endblock %}

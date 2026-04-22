@@ -1,0 +1,32 @@
+// Fade-in on scroll
+const faders = document.querySelectorAll('.fade-in');
+
+const appearOptions = {
+    threshold: 0.2
+};
+
+const appearOnScroll = new IntersectionObserver(function(entries, observer) {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+
+        entry.target.classList.add('show');
+        observer.unobserve(entry.target);
+    });
+}, appearOptions);
+
+faders.forEach(fader => {
+    appearOnScroll.observe(fader);
+});
+
+// Hero text animation on load
+window.addEventListener('load', () => {
+    const heroText = document.querySelector('.hero-content');
+    heroText.style.opacity = 0;
+    heroText.style.transform = 'translateY(30px)';
+
+    setTimeout(() => {
+        heroText.style.transition = 'all 1s ease';
+        heroText.style.opacity = 1;
+        heroText.style.transform = 'translateY(0)';
+    }, 300);
+});

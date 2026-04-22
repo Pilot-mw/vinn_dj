@@ -1,0 +1,84 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+:root {
+    --bg: #000;
+    --card: #003366;
+    --card-alt: #003366;
+    --border: #004080;
+    --text: #ff9500;
+}
+
+body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+#header {
+    background: var(--card) !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+fieldset {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    margin-bottom: 15px !important;
+}
+
+fieldset legend {
+    background: var(--card-alt) !important;
+    color: var(--text) !important;
+    font-weight: 600;
+    padding: 10px 15px !important;
+    border-radius: 4px 4px 0 0 !important;
+}
+
+.form-row {
+    background: transparent !important;
+    padding: 15px 0 !important;
+}
+
+.form-row label {
+    color: var(--text) !important;
+    font-weight: 600;
+}
+
+input[type="text"], textarea, select {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    color: var(--text) !important;
+    padding: 10px !important;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: var(--text) !important;
+}
+
+.submit-row {
+    background: var(--card-alt) !important;
+    border-top: 2px solid var(--border) !important;
+    padding: 15px !important;
+}
+
+.submit-row input, .submit-row input[type="submit"] {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+}
+
+.deletelink {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+}
+
+.help {
+    color: #ffcc80 !important;
+}
+</style>
+{% endblock %}

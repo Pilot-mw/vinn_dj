@@ -1,0 +1,109 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+:root {
+    --bg: #000;
+    --card: #003366;
+    --card-alt: #003366;
+    --border: #004080;
+    --text: #ff9500;
+    --text-muted: #ffcc80;
+}
+
+body {
+    background: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+#header {
+    background: var(--card) !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+.object-tools a {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+}
+
+.object-tools a:hover {
+    background: #002244 !important;
+}
+
+select#action {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+    color: var(--text) !important;
+}
+
+button[type="submit"].actions-button {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+}
+
+#result_list thead th {
+    background: var(--card-alt) !important;
+    color: var(--text) !important;
+    border-bottom: 2px solid var(--border) !important;
+}
+
+#result_list tbody td {
+    background: var(--card) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+#result_list tbody tr:hover td {
+    background: #002244 !important;
+}
+
+.row-actions a {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.row-actions a:hover {
+    background: #002244 !important;
+}
+
+#search-bar {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 4px !important;
+}
+
+#search-bar input[type="text"] {
+    background: #001a33 !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+}
+
+#search-bar input[type="submit"] {
+    background: #001a33 !important;
+    color: #fff !important;
+    border: 1px solid var(--border) !important;
+}
+
+#search-bar label {
+    color: var(--text) !important;
+}
+
+.paginator {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.paginator a {
+    background: var(--card-alt) !important;
+    color: var(--text) !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | DJ VIN</title>
+    <style>
+        :root {
+            --bg: #000;
+            --card: #003366;
+            --text: #ff9500;
+            --text-light: #fff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .payment-container {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .payment-header h1 {
+            font-size: 28px;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+        .track-name {
+            font-size: 18px;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        .amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--text);
+            text-align: center;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #004080;
+            border-radius: 8px;
+            background: #002244;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--text);
+        }
+        .payment-methods {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .method-btn {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #004080;
+            border-radius: 8px;
+            background: #002244;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .method-btn.selected {
+            border-color: var(--text);
+            background: rgba(255, 149, 0, 0.1);
+        }
+        .method-btn:hover {
+            border-color: var(--text);
+        }
+        .method-btn .name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .method-btn .number {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--text);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #ffaa33;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .instructions {
+            background: rgba(255,149,0,0.1);
+            border: 1px solid var(--text);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <a href="{% url 'music' %}" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back to Music
+        </a>
+
+        <div class="payment-header">
+            <h1>DJ VIN</h1>
+            <p class="track-name">{{ track|default:"Track Purchase" }}</p>
+        </div>
+
+        <div class="amount">K2,100</div>
+
+        <div class="instructions">
+            <strong>How to pay:</strong><br>
+            Select your network below and send K2,100 to the number shown. You will receive your track within 24 hours after confirmation.
+        </div>
+
+        <form method="POST" action="#" onsubmit="alert('Thank you! Please send K2,100 to the displayed number. You will receive your track within 24 hours.'); return false;">
+            {% csrf_token %}
+            <div class="payment-methods">
+                <div class="method-btn selected" onclick="selectMethod(this, 'airtel')">
+                    <div class="name">Airtel Money</div>
+                    <div class="number">0995 818 766</div>
+                </div>
+                <div class="method-btn" onclick="selectMethod(this, 'tnm')">
+                    <div class="name">TNM Mpamba</div>
+                    <div class="number">0893 581 883</div>
+                </div>
+            </div>
+
+            <input type="hidden" name="network" id="network" value="airtel">
+
+            <div class="form-group">
+                <label>Your Mobile Number</label>
+                <input type="tel" name="phone" placeholder="e.g. 0881234567" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Confirm Payment</button>
+        </form>
+    </div>
+
+    <script>
+        function selectMethod(element, network) {
+            document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('selected'));
+            element.classList.add('selected');
+            document.getElementById('network').value = network;
+        }
+    </script>
+</body>
+</html>

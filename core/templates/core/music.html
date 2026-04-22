@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music | DJ VIN</title>
+    <link rel="stylesheet" href="{% static 'css/music.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="music-player">
+        <!-- Background -->
+        <div class="player-bg">
+            <div class="bg-gradient"></div>
+        </div>
+
+        <!-- Header -->
+        <header class="player-header">
+            <a href="{% url 'home' %}" class="back-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                Back
+            </a>
+            <h1>DJ VIN <span>Mixes</span></h1>
+        </header>
+
+        <!-- Playlist -->
+        <div class="playlist-container">
+            <div class="playlist-header">
+                <h2>Tracklist</h2>
+                <span class="track-count">{{ mixes|length }} tracks</span>
+            </div>
+
+            <div class="playlist" id="playlist">
+                {% for mix in mixes %}
+                <div class="track-item" data-src="{{ mix.audio_file.url }}" data-title="{{ mix.title }}">
+                    <div class="track-number">{{ forloop.counter }}</div>
+                    <div class="track-info">
+                        <span class="track-title">{{ mix.title }}</span>
+                    </div>
+                    <div class="track-actions">
+                        <button class="btn-listen" onclick="playTrack(this.closest('.track-item'))">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            Listen
+                        </button>
+                        <button class="btn-buy" onclick="window.location.href='{% url 'payment' %}?track={{ mix.title|urlencode }}'">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            Buy K2,100
+                        </button>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-tracks">
+                    <p>No tracks available yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Streaming Player Bar (Fixed Bottom) -->
+    <div class="streaming-player" id="streaming-player">
+        <div class="player-bar">
+            <div class="player-bar-left">
+                <div class="bar-album-art">
+                    <span>DJ</span>
+                </div>
+                <div class="bar-track-info">
+                    <span class="bar-track-title" id="bar-title">Track Title</span>
+                    <span class="bar-track-artist">DJ VIN</span>
+                </div>
+            </div>
+            
+            <div class="player-bar-center">
+                <div class="bar-controls">
+                    <button class="bar-btn" onclick="previousTrack()">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"></line></svg>
+                    </button>
+                    <button class="bar-btn bar-play-btn" id="bar-play-btn" onclick="togglePlay()">
+                        <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    </button>
+                    <button class="bar-btn" onclick="nextTrack()">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"></line></svg>
+                    </button>
+                </div>
+                <div class="bar-progress">
+                    <span id="bar-current-time">0:00</span>
+                    <input type="range" id="bar-progress" class="bar-progress-bar" value="0" min="0" max="100">
+                    <span id="bar-duration">0:00</span>
+                </div>
+            </div>
+            
+            <div class="player-bar-right">
+                <div class="bar-volume">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="11 5 6 9 2 9 2 15 6 18 11 22 11 5"></polygon></svg>
+                    <input type="range" id="bar-volume" min="0" max="100" value="80">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Audio Element for Local Files -->
+    <audio id="audio-player"></audio>
+
+    <script>
+        let isPlaying = false;
+        let currentTrackIndex = 0;
+        let tracks = document.querySelectorAll('.track-item[data-src]');
+        const audio = document.getElementById('audio-player');
+        const progressBar = document.getElementById('bar-progress');
+        const barPlayBtn = document.getElementById('bar-play-btn');
+
+        function playTrack(element) {
+            if (!element) {
+                alert('No element');
+                return;
+            }
+            
+            document.querySelectorAll('.track-item').forEach(t => t.classList.remove('active'));
+            element.classList.add('active');
+            
+            var src = element.getAttribute('data-src');
+            var title = element.getAttribute('data-title');
+            
+            if (!src || src === '' || src === '/media/') {
+                alert('No audio file for: ' + title);
+                return;
+            }
+            
+            audio.src = src;
+            audio.play();
+            isPlaying = true;
+            updatePlayButton();
+            showNowPlaying(title);
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                audio.pause();
+            } else {
+                audio.play();
+            }
+            isPlaying = !isPlaying;
+            updatePlayButton();
+        }
+
+        function updatePlayButton() {
+            const barPlayIcon = barPlayBtn.querySelector('.play-icon');
+            const barPauseIcon = barPlayBtn.querySelector('.pause-icon');
+            if (isPlaying) {
+                barPlayIcon.style.display = 'none';
+                barPauseIcon.style.display = 'block';
+            } else {
+                barPlayIcon.style.display = 'block';
+                barPauseIcon.style.display = 'none';
+            }
+        }
+
+        function showNowPlaying(title) {
+            document.getElementById('bar-title').textContent = title || 'Now Playing';
+        }
+
+        function previousTrack() {
+            currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+            playTrack(tracks[currentTrackIndex]);
+        }
+
+        function nextTrack() {
+            currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+            playTrack(tracks[currentTrackIndex]);
+        }
+
+        function setVolume(value) {
+            audio.volume = value / 100;
+        }
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressBar.value = progress;
+                document.getElementById('bar-current-time').textContent = formatTime(audio.currentTime);
+            }
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            document.getElementById('bar-duration').textContent = formatTime(audio.duration);
+        });
+
+        audio.addEventListener('ended', () => {
+            nextTrack();
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        progressBar.addEventListener('input', () => {
+            const time = (progressBar.value / 100) * audio.duration;
+            audio.currentTime = time;
+        });
+        
+        document.getElementById('bar-volume').addEventListener('input', function() {
+            audio.volume = this.value / 100;
+        });
+    </script>
+</body>
+</html>

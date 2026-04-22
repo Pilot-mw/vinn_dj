@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book DJ VIN | Professional DJ Services</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/booking.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <section class="booking-hero">
+        <div class="booking-bg">
+            <div class="bg-gradient"></div>
+            <div class="bg-lights"></div>
+        </div>
+
+        <div class="booking-container">
+            <a href="{% url 'home' %}" class="back-link">Back to Home</a>
+
+            <div class="booking-header">
+                <h1 class="title">Book <span class="title-accent">VIN</span></h1>
+                <p class="subtitle">Let's make your event unforgettable</p>
+            </div>
+
+            <form method="POST" class="booking-form">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_name">Your Name</label>
+                        <input type="text" name="name" id="id_name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_email">Email Address</label>
+                        <input type="email" name="email" id="id_email" placeholder="john@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_event_type">Event Type</label>
+                    <select name="event_type" id="id_event_type" required>
+                        <option value="" disabled selected>Select event type</option>
+                        <option value="wedding">Wedding</option>
+                        <option value="corporate">Corporate Event</option>
+                        <option value="birthday">Birthday Party</option>
+                        <option value="club">Club/Nightclub</option>
+                        <option value="festival">Festival</option>
+                        <option value="private">Private Party</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_event_date">Event Date</label>
+                        <input type="date" name="event_date" id="id_event_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="id_event_time">Event Time</label>
+                        <input type="time" name="event_time" id="id_event_time" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_venue">Venue</label>
+                    <input type="text" name="venue" id="id_venue" placeholder="Venue name and address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_message">Message (Optional)</label>
+                    <textarea name="message" id="id_message" rows="4" placeholder="Tell us about your event..."></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span class="btn-text">Submit Booking</span>
+                    <span class="btn-glow"></span>
+                </button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
