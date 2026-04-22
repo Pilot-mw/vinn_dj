@@ -105,48 +105,11 @@ WSGI_APPLICATION = 'djvin_site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-db_from_env = config('DATABASE_URL', default='sqlite:///db.sqlite3')
-
-if db_from_env.startswith('/'):
-    # Handle Render's CrateDB format: /user:password@host:port/dbname
-    import re
-    match = re.match(r'/([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', db_from_env)
-    if match:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': match.group(5)[:63],
-                'USER': match.group(1),
-                'PASSWORD': match.group(2),
-                'HOST': match.group(3),
-                'PORT': match.group(4),
-            }
-        }
-    else:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': BASE_DIR / 'db.sqlite3',
-            }
-        }
-elif db_from_env.startswith('postgres') or db_from_env.startswith('cockroachdb'):
-    import re
-    match = re.match(r'(?:postgres|cockroachdb)://([^:]+):([^@]+)@([^:]+):(\d+)/(.+)', db_from_env)
-    if match:
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': match.group(5)[:63],  # Max 63 chars for PostgreSQL
-                'USER': match.group(1),
-                'PASSWORD': match.group(2),
-                'HOST': match.group(3),
-                'PORT': match.group(4),
-            }
-        }
-    else:
-        DATABASES = {
-            'default': dj_database_url.parse(db_from_env)
-        }
+db_url = config('DATABASE_URL', default='')
+if db_url:
+    DATABASES = {
+        'default': dj_database_url.parse(db_url)
+    }
 else:
     DATABASES = {
         'default': {
