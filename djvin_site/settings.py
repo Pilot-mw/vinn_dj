@@ -22,11 +22,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = ['djvinmw.up.railway.app', 'www.djvinmw.up.railway.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
 if ALLOWED_HOSTS_ENV:
-    ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS_ENV.split(',') if h.strip()]
-else:
-    ALLOWED_HOSTS = ['djvinmw.up.railway.app', 'www.djvinmw.up.railway.app', '127.0.0.1', 'localhost']
+    ALLOWED_HOSTS += [h.strip() for h in ALLOWED_HOSTS_ENV.split(',') if h.strip()]
 
 # Media files
 MEDIA_URL = '/media/'
