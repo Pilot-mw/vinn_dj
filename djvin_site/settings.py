@@ -21,15 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiws+2x419p&yfzk*95z3o(l&!*toio_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True  # Temporarily enabled for debugging
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-_allowed_hosts = config('ALLOWED_HOSTS', default='*')
-ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts.split(',')]
-
-# Add the Render domain explicitly
-if 'vinn-dj.onrender.com' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('vinn-dj.onrender.com')
-    ALLOWED_HOSTS.append('www.vinn-dj.onrender.com')
+ALLOWED_HOSTS = [
+    h.strip() for h in config(
+        'ALLOWED_HOSTS',
+        default='vinn-dj.onrender.com,localhost,127.0.0.1'
+    ).split(',')
+]
 
 # Media files
 MEDIA_URL = '/media/'
@@ -105,11 +104,19 @@ WSGI_APPLICATION = 'djvin_site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-db_url = config('DATABASE_URL', default='')
-if db_url:
+
+
+DATABASE_URL = config('DATABASE_URL', default=None)
+
+if DATABASE_URL:
     DATABASES = {
-        'default': dj_database_url.parse(db_url)
-    }
+        'default': dj_database_url.config(
+        default=config('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True
+    )
+}
+
 else:
     DATABASES = {
         'default': {
@@ -117,8 +124,6 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -159,11 +164,7 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-# Heroku/Railway deployment check
-import sys
-if not os.path.exists(os.path.join(BASE_DIR, 'db.sqlite3')):
-    # SQLite doesn't exist (PostgreSQL should be used)
-    pass
+
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
@@ -174,3 +175,9 @@ os.makedirs(STATIC_ROOT, exist_ok=True)
 
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    
+    
+CSRF_TRUSTED_ORIGINS = [
+    "https://vinn-dj.onrender.com",
+    "https://www.vinn-dj.onrender.com",
+]
