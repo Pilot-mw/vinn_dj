@@ -21,13 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', 'django-insecure-)fkbpkk9g+9@l5jw85eiws+2x419p&yfzk*95z3o(l&!*toio_')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    h.strip() for h in config(
-        'ALLOWED_HOSTS',
-        default='vinn-dj.onrender.com,localhost,127.0.0.1'
-    ).split(',')
+    "vinn-dj.onrender.com",
+    "www.vinn-dj.onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 
 # Media files
