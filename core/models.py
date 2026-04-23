@@ -1,45 +1,59 @@
 from django.db import models
 from cloudinary.models import CloudinaryField
 
+
+# =====================
+# GALLERY
+# =====================
 class GalleryImage(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, blank=True)
     image = CloudinaryField('image')
-    
+    caption = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.title or "Gallery Image"
+
+
+# =====================
+# TRACKS (MUSIC)
+# =====================
 class Track(models.Model):
     title = models.CharField(max_length=200)
     artist = models.CharField(max_length=100)
     cover_image = CloudinaryField('image', blank=True, null=True)
-    audio = CloudinaryField(resource_type='raw')
+    audio = CloudinaryField(resource_type='raw')  # 🎧 IMPORTANT
     duration = models.CharField(max_length=10, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
+
+# =====================
+# MIXES (FIXED)
+# =====================
 class Mix(models.Model):
     title = models.CharField(max_length=200)
-    audio_file = models.FileField(upload_to='mixes/')
+    audio_file = CloudinaryField(resource_type='raw')  # FIXED
 
     def __str__(self):
         return self.title
 
 
+# =====================
+# CLIENTS (FIXED)
+# =====================
 class Client(models.Model):
     name = models.CharField(max_length=100)
-    logo = models.ImageField(upload_to='clients/')
+    logo = CloudinaryField('image')  # FIXED
 
     def __str__(self):
         return self.name
 
 
-class GalleryImage(models.Model):
-    image = models.ImageField(upload_to='gallery/')
-    caption = models.CharField(max_length=255, blank=True)
-
-    def __str__(self):
-        return self.caption or "Gallery Image"
-
-
+# =====================
+# BOOKINGS
+# =====================
 class Booking(models.Model):
     EVENT_TYPES = [
         ('wedding', 'Wedding'),
@@ -64,6 +78,9 @@ class Booking(models.Model):
         return f"{self.name} - {self.event_date}"
 
 
+# =====================
+# NOTIFICATIONS
+# =====================
 class Notification(models.Model):
     TYPES = [
         ('booking', 'Booking'),
