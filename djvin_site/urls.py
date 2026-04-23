@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from core.views import home, booking, music, payment, notifications, mark_notification_read, dashboard, export_bookings_csv
+from core.views import home, booking, music, payment, notifications, mark_notification_read, dashboard, export_bookings_csv, ping
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('booking/', booking, name='booking'),
     path('music/', music, name='music'),
     path('payment/', payment, name='payment'),
+    path('ping/', ping),
     path('api/notifications/', notifications, name='notifications'),
     path('api/notifications/mark-read/', mark_notification_read, name='mark_notification_read'),
     path('dashboard/', dashboard, name='dashboard'),

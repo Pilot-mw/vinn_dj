@@ -12,6 +12,10 @@ from .forms import BookingForm
 import csv
 
 
+def ping(request):
+    return HttpResponse("OK")
+
+
 def home(request):
     mixes = Mix.objects.all()
     clients = Client.objects.all()
