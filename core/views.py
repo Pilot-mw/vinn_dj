@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import Mix, Client, GalleryImage, Booking, Notification
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from django.db import models
+from datetime import timedelta
+from .models import Mix, Client, GalleryImage, Booking, Notification, Track
 from .forms import BookingForm
+import csv
 
 
 def home(request):
@@ -124,3 +129,74 @@ def mark_notification_read(request):
             except Notification.DoesNotExist:
                 pass
     return JsonResponse({'success': False})
+
+
+@login_required
+def dashboard(request):
+    if not request.user.is_staff:
+        return redirect('home')
+    
+    now = timezone.now()
+    week_ago = now - timedelta(days=7)
+    next_week = now + timedelta(days=7)
+    
+    total_bookings = Booking.objects.count()
+    total_tracks = Track.objects.count() if 'Track' in dir() else 0
+    total_gallery = GalleryImage.objects.count()
+    total_clients = Client.objects.count()
+    total_mixes = Mix.objects.count()
+    
+    new_bookings_week = Booking.objects.filter(created_at__gte=week_ago).count()
+    upcoming_bookings = Booking.objects.filter(event_date__gte=now.date(), event_date__lte=next_week.date()).order_by('event_date')[:10]
+    latest_bookings = Booking.objects.order_by('-created_at')[:5]
+    
+    bookings_per_month = Booking.objects.extra(
+        select={'month': "strftime('%%Y-%%m', event_date)"}
+    ).values('month').annotate(count=models.Count('id'))
+    
+    event_type_counts = Booking.objects.values('event_type').annotate(count=models.Count('id'))
+    
+    from django.db.models import Count
+    event_types = Booking.objects.values('event_type').annotate(count=Count('id'))
+    
+    context = {
+        'total_bookings': total_bookings,
+        'total_tracks': total_tracks,
+        'total_gallery': total_gallery,
+        'total_clients': total_clients,
+        'total_mixes': total_mixes,
+        'new_bookings_week': new_bookings_week,
+        'upcoming_bookings': upcoming_bookings,
+        'latest_bookings': latest_bookings,
+        'event_types': list(event_types),
+        'unread_notifications': Notification.objects.filter(is_read=False).count(),
+    }
+    
+    return render(request, 'admin/dashboard.html', context)
+
+
+@login_required
+def export_bookings_csv(request):
+    if not request.user.is_staff:
+        return redirect('home')
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="bookings.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Event Type', 'Date', 'Time', 'Venue', 'Message', 'Created At'])
+    
+    bookings = Booking.objects.all()
+    for booking in bookings:
+        writer.writerow([
+            booking.name,
+            booking.email,
+            booking.get_event_type_display(),
+            booking.event_date,
+            booking.event_time,
+            booking.venue,
+            booking.message,
+            booking.created_at,
+        ])
+    
+    return response

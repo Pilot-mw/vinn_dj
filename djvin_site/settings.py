@@ -183,3 +183,5 @@ CSRF_TRUSTED_ORIGINS = [
     "https://vinn-dj.onrender.com",
     "https://www.vinn-dj.onrender.com",
 ]
+
+LOGIN_URL = '/admin/login/'
